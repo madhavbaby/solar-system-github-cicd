@@ -13,11 +13,14 @@ env:
 jobs:
     unit-testing:
       name: Unit Testing
-      runs-on: ubuntu-latest 
       strategy:
-        matrix:
-          node-version: [18]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+          matrix:
+              noejs_version: [18, 19, 20]
+              operating_system: [ubuntu-latest, macos-latest]
+              exclude:
+                  - nodejs_version: 18
+                    operating_system: macos-latest
+      runs-on: ${{ matrix.operating_system }}
       steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
