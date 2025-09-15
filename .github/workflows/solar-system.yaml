@@ -38,8 +38,10 @@ jobs:
         run: npm test         
 
       - name: Archive Test Result
-        if: failure() && (steps.nodejs_unit_test.outcome == 'failure' || steps.nodejs_unit_test.outcome == 'success')
+  #      if: failure() && (steps.nodejs_unit_test.outcome == 'failure' || steps.nodejs_unit_test.outcome == 'success')
               #by default the function is success(), thats y we added failur function, here for if the step is fail also generate file.
+        
+        if: always() # it print even the step fail or success
         uses: actions/upload-artifact@v4
         with:
           name: Mocha-Test-Result-00-${{ matrix.operating_system }}-${{ matrix.nodejs_version }}
