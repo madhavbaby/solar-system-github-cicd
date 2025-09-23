@@ -36,6 +36,9 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
           
+      - name: Install dependency
+        run: npm Install
+         
       - name: unit test
         id: nodejs_unit_test
         run: npm test         
