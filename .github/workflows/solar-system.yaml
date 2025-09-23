@@ -30,9 +30,12 @@ jobs:
         with:
           node-version: ${{ matrix.nodejs_version }}
     
-      - name: Install dependency
-        run: npm install 
-    
+      - name: Cache NPM dependency
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles{'package-lock.json'} }}
+          
       - name: unit test
         id: nodejs_unit_test
         run: npm test         
