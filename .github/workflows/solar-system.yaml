@@ -157,7 +157,7 @@ jobs:
       - name: Install Kubectl CLI
         uses: azure/setup-kubectl@v4
         with:
-          version: '<version>'
+          version: '1.33.4'
 
       - name: Fetch Kubernetes Cluster Details
         run: |
@@ -167,7 +167,7 @@ jobs:
 
       - name: Save Nginx Ingress Controller IP as a GITHUB Environment Variable
         run: |
-          echo "INGRESS_IP"=$(kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}' >> "$GITHUB_ENV"
+          echo "INGRESS_IP=$(kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> "$GITHUB_ENV"
         # This command is used to fetch ip address dynamically.
       
       - name: Replace Token in Manifest files
