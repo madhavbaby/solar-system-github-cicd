@@ -29,17 +29,20 @@ env:
 jobs:
   unit-testing:
     name: Unit Testing
-    services:
-      mongo-db: #label
-        image: madhavbaby/mongo-db:non-prod 
-        ports:
-          - 27017:27017
+    # services:
+    #   mongo-db: #label
+    #     image: madhavbaby/mongo-db:non-prod 
+    #     ports:
+    #       - 27017:27017
     #if we have env variable at both workflow and job level, the job level take higher precedence
   
     # env: 
     #   MONGO_URI: 'mongodb//localhost:27017/superData'
     #   MONGO_USERNAME: ${{ vars.NON-RPOD-MONGO_USERNAME }}
     #   MONGO_PASSWORD: ${{ secrets.NON-PROD-MONGO_PASSWORD }}
+
+    # this i commanded bcz that image not in my docker-hub, if the image is there only need to do teh service part, other than we need to use cloud mongo
+    # like production set up
    
     env:
       MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
