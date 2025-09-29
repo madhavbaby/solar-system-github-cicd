@@ -35,11 +35,16 @@ jobs:
         ports:
           - 27017:27017
     #if we have env variable at both workflow and job level, the job level take higher precedence
-    env: 
-      MONGO_URI: 'mongodb//localhost:27017/superData'
-      MONGO_USERNAME: ${{ vars.NON-RPOD-MONGO_USERNAME }}
-      MONGO_PASSWORD: ${{ secrets.NON-PROD-MONGO_PASSWORD }}
+  
+    # env: 
+    #   MONGO_URI: 'mongodb//localhost:27017/superData'
+    #   MONGO_USERNAME: ${{ vars.NON-RPOD-MONGO_USERNAME }}
+    #   MONGO_PASSWORD: ${{ secrets.NON-PROD-MONGO_PASSWORD }}
    
+    env:
+      MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
+      MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
+      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
     strategy:
       matrix:
         nodejs_version: [18, 20]
