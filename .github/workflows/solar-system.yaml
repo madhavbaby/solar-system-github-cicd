@@ -155,6 +155,17 @@ jobs:
       #     method: kubeconfig
       #     kubeconfig: ${{ secrets.KUBECONFIG }}
 
+       # Step 1: Install and configure Google Cloud SDK
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: 'latest' # Ensures a reliable GCloud base is present [8]
+          
+      # Step 2: Install the required GKE authentication component
+      - name: Install GKE Auth Plugin
+        run: sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin # The definitive fix [6]
+
+      # Step 3: Configure Kubectl environment variable (User's original step)
       - name: Configure Kubectl to use GKE plugin
         run: echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
 
