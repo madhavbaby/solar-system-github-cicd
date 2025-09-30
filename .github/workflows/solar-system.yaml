@@ -44,7 +44,7 @@ jobs:
     # this i commanded bcz that image not in my docker-hub, if the image is there only need to do teh service part, other than we need to use cloud mongo
     # like production set up
    
-   
+
     env:
       MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
       MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
@@ -167,6 +167,14 @@ jobs:
         uses: azure/setup-kubectl@v4
         with:
           version: 'v1.26.0'
+
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin -q
+
+      - name: Configure Kubectl to use GKE plugin
+        run: |
+          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
       - name: Fetch Kubernetes Cluster Details
         run: |
