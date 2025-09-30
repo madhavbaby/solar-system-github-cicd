@@ -163,7 +163,7 @@ jobs:
           
       # Step 2: Install the required GKE authentication component
       - name: Install GKE Auth Plugin
-        run: sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin # The definitive fix [6]
+        run: gcloud components install gke-gcloud-auth-plugin # The definitive fix [6]
 
       # Step 3: Configure Kubectl environment variable (User's original step)
       - name: Configure Kubectl to use GKE plugin
