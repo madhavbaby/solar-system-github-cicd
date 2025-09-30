@@ -169,7 +169,7 @@ jobs:
 
       - name: Fetch Kubernetes Cluster Details
         run: |
-          kubectl version --short
+          kubectl version
           echo ------------------------------------
           kubectl get nodes
 
@@ -190,4 +190,3 @@ jobs:
           IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
           INGRESS_IP: ${{ env.INGRESS_IP }}
 
-          
