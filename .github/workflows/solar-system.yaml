@@ -155,6 +155,9 @@ jobs:
       #     method: kubeconfig
       #     kubeconfig: ${{ secrets.KUBECONFIG }}
 
+      - name: Configure Kubectl to use GKE plugin
+        run: echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+
       - name: Setup kubeconfig
         run: |
           mkdir -p $HOME/.kube
@@ -167,15 +170,7 @@ jobs:
         uses: azure/setup-kubectl@v4
         with:
           version: 'v1.26.0'
-
-      - name: Install gke-gcloud-auth-plugin
-        run: |
-          gcloud components install gke-gcloud-auth-plugin -q
-
-      - name: Configure Kubectl to use GKE plugin
-        run: |
-          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-
+          
       - name: Fetch Kubernetes Cluster Details
         run: |
           kubectl version
