@@ -155,33 +155,42 @@ jobs:
       #     method: kubeconfig
       #     kubeconfig: ${{ secrets.KUBECONFIG }}
 
-       # Step 1: Install and configure Google Cloud SDK
-      - name: Setup Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          version: 'latest' # Ensures a reliable GCloud base is present [8]
           
-      # Step 2: Install the required GKE authentication component
-      - name: Install GKE Auth Plugin
-        run: gcloud components install gke-gcloud-auth-plugin # The definitive fix [6]
+      # # Step 2: Install the required GKE authentication component
+      # - name: Install GKE Auth Plugin
+      #   run: gcloud components install gke-gcloud-auth-plugin # The definitive fix [6]
 
-      # Step 3: Configure Kubectl environment variable (User's original step)
-      - name: Configure Kubectl to use GKE plugin
-        run: echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+      # # Step 3: Configure Kubectl environment variable (User's original step)
+      # - name: Configure Kubectl to use GKE plugin
+      #   run: echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
 
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
-        env:
-          KUBECONFIG: $HOME/.kube/config
+      # - name: Setup kubeconfig
+      #   run: |
+      #     mkdir -p $HOME/.kube
+      #     echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+      #     chmod 600 $HOME/.kube/config
+      #   env:
+      #     KUBECONFIG: $HOME/.kube/config
 
-      - name: Install Kubectl CLI
-        uses: azure/setup-kubectl@v4
+      # - name: Install Kubectl CLI
+      #   uses: azure/setup-kubectl@v4
+      #   with:
+      #     version: 'v1.26.0'
+
+      
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
         with:
-          version: 'v1.26.0'
+          create_credentials_file: true
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.SA_EMAIL }}
           
+      - name: Set up GKE credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          location: ${{ secrets.REGION }}
+
       - name: Fetch Kubernetes Cluster Details
         run: |
           kubectl version
