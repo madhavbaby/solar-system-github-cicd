@@ -61,7 +61,7 @@ jobs:
         nodejs_version: [18, 20]
         operating_system: [ubuntu-latest] #mac_os
         exclude:
-          - nodejs_version: 18
+          - nodejs_version: 18,20
             operating_system: macos-latest
     runs-on: ${{ matrix.operating_system }}
     steps:
@@ -184,7 +184,7 @@ jobs:
       #   with:
       #     version: 'v1.26.0'
 
-      
+
       - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
