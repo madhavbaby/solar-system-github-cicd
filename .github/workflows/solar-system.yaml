@@ -222,3 +222,5 @@ jobs:
           IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
           INGRESS_IP: ${{ env.INGRESS_IP }}
 
+          
+
