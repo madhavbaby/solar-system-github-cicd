@@ -179,22 +179,45 @@ jobs:
           kubectl get nodes
 
 
-      - name: Set up Helm
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
       - name: Ensure namespace exists
         run: |
-          kubectl create namespace development --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create namespace ingress-nginx --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Install NGINX Ingress
+      - name: Install NGINX Ingress (only if not already installed)
         run: |
           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo update
-          helm install ingress-nginx ingress-nginx/ingress-nginx \
-            --namespace development \
-            --set controller.ingressClassResource.name=nginx-dev \
-            --set controller.ingressClass=nginx-dev
+
+          if ! helm status ingress-nginx -n ingress-nginx > /dev/null 2>&1; then
+            echo "Installing NGINX Ingress in namespace ingress-nginx..."
+            helm install ingress-nginx ingress-nginx/ingress-nginx \
+              --namespace ingress-nginx \
+              --set controller.ingressClassResource.name=nginx \
+              --set controller.ingressClass=nginx
+          else
+            echo "NGINX Ingress already installed. Skipping installation."
+          fi
+
+      - name: Wait for LoadBalancer IP and Save to GITHUB_ENV
+        run: |
+          echo "Waiting for NGINX Ingress LoadBalancer IP..."
+          SERVICE_NAME=ingress-nginx-controller
+          NAMESPACE=ingress-nginx
+
+          for i in {1..30}; do
+            INGRESS_IP=$(kubectl get svc $SERVICE_NAME -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null)
+            if [ -n "$INGRESS_IP" ]; then
+              echo "LoadBalancer IP found: $INGRESS_IP"
+              echo "INGRESS_IP=$INGRESS_IP" >> $GITHUB_ENV
+              break
+            fi
+            echo "Waiting for ingress IP... ($i/30)"
+            sleep 10
+          done
+
+          # Optional: show final IP if found
+          kubectl get svc $SERVICE_NAME -n $NAMESPACE -o wide
+
 
       - name: Save Nginx Ingress Controller IP as a GITHUB Environment Variable
         run: |
