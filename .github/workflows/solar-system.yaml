@@ -185,12 +185,13 @@ jobs:
       #     version: 'v1.26.0'
 
 
-      - name: 'Authenticate to Google Cloud'
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
           #create_credentials_file: true
-          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
-          service_account: ${{ secrets.SA_EMAIL }}
+          workload_identity_provider: 'projects/832520843662/locations/global/workloadIdentityPools/git-hub-pool/providers/Git-Hub'
+          service_account: 'git-hub-service-account@training-2024-batch.iam.gserviceaccount.com'
           
       - name: Set up GKE credentials
         uses: google-github-actions/get-gke-credentials@v1
