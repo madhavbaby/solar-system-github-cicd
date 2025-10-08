@@ -58,7 +58,7 @@ jobs:
       MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
     strategy:
       matrix:
-        nodejs_version: 18
+        nodejs_version: [ 18,20 ]
         operating_system: [ubuntu-latest] #mac_os
         exclude:
           - nodejs_version: 18,20
