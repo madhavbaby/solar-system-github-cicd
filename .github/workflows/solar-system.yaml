@@ -239,6 +239,11 @@ jobs:
         run: |
           cat kubernetes/development/*.yaml
 
+      - name: Ensure namespace exists  # or this we can specify in next step also
+        run: |
+          kubectl get namespace ${{ vars.NAMESPACE }} >/dev/null 2>&1 || \
+          kubectl create namespace ${{ vars.NAMESPACE }
+     
       - name: Create MongoDB Secret
         run: |
           kubectl -n ${{ vars.NAMESPACE }} create secret generic mongo-db-secret \
@@ -246,7 +251,7 @@ jobs:
             --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
             --from-literal=MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
             --save-config \
-            --dry-run=client -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl apply -f - 
 
       - name: Deploy Development to GKE Cluster
         run: |
