@@ -245,7 +245,7 @@ jobs:
             --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
             --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
             --from-literal=MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
-            --namespace $NAMESPACE \
+            --save-config \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy Development to GKE Cluster
