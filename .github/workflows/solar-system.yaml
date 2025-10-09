@@ -239,6 +239,25 @@ jobs:
         run: |
           cat kubernetes/development/*.yaml
 
+      - name: Create MongoDB Secret
+        run: |
+          kubectl -n ${{ vars.NAMESPACE }} create secret generic mongo-db-secret \
+            --from-literal=MONGO_URI='mongodb+srv://supercluster.d83jj.mongodb.net/superData' \
+            --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
+            --from-literal=MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
+            --namespace $NAMESPACE \
+            --dry-run=client -o yaml | kubectl apply -f -
 
-          
+      - name: Deploy Development to GKE Cluster
+        run: |
+          kubectl apply -f kubernetes/development/ --namespace ${{ vars.NAMESPACE }}
+
+      # - name: Verify Deployment
+      #   run: |
+      #     kubectl -n ${{ vars.NAMESPACE }} get all
+      #     kubectl -n ${{ vars.NAMESPACE }} describe deployment solar-system-deployment  
+      #     kubectl -n ${{ vars.NAMESPACE }} get ingress  
+      #     kubectl -n ${{ vars.NAMESPACE }} describe ingress solar-system-ingress
+      #     echo "Application URL: http://${{ env.INGRESS_IP }}/solar-system/live"
+
 
