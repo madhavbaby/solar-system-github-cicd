@@ -256,7 +256,7 @@ jobs:
 
       - name: Deploy Development to GKE Cluster
         run: |
-          kubectl apply -f kubernetes/development
+          kubectl apply -f kubernetes/development -n ${{ vars.NAMESPACE }}
 
       # - name: Verify Deployment
       #   run: |
