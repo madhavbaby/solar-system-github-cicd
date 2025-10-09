@@ -245,9 +245,10 @@ jobs:
           kubectl get namespace ${{ vars.NAMESPACE }} >/dev/null 2>&1 || \
           kubectl create namespace ${{ vars.NAMESPACE }}
      
+     #THIS used for create the image using this secret in the deployment yaml file
       - name: Create MongoDB Secret
         run: |
-          kubectl -n ${{ vars.NAMESPACE }} create secret generic mongo-db-secret \
+          kubectl -n ${{ vars.NAMESPACE }} create secret generic mongo-db-creds \
             --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
             --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
             --from-literal=MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \

@@ -17,7 +17,7 @@ spec:
         app: solar-system
     spec:
       containers:
-      - image: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+      - image: {IMAGE}
         imagePullPolicy: Always
         name: solar-system
         ports:
@@ -26,4 +26,4 @@ spec:
           protocol: TCP
         envFrom:
         - secretRef:
-            name: mongo-db-creds
+            name: mongo-db-creds 
