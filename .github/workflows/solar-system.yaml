@@ -151,6 +151,8 @@ jobs:
 
   dev-deploy:
     needs: docker
+    outputs:
+      APP_INGRESS_URL: ${{ steps.set-ingress-host-address.outputs.APP_INGRESS_HOST }}
     runs-on: ubuntu-latest   
     steps:
       - name: Checkout Repository
@@ -259,6 +261,13 @@ jobs:
         run: |
           kubectl apply -f kubernetes/development -n ${{ vars.NAMESPACE }}
 
+      - name: Set App Ingress Host URL
+        id: set-ingress-host-address
+        run: |
+          echo "APP_INGRESS_HOST=$(kubectl -n ${{ vars.NAMESPACE }} get ingress -o jsonpath='{.items[0].spec.tls[0].hosts[0]}')" >> "$GITHUB_ENV"
+        # This command is used to fetch ip address dynamically.
+
+
       # - name: Verify Deployment
       #   run: |
       #     kubectl -n ${{ vars.NAMESPACE }} get all
@@ -268,3 +277,22 @@ jobs:
       #     echo "Application URL: http://${{ env.INGRESS_IP }}/solar-system/live"
 
 
+  integration-testing:
+    name: Integration Testing
+    needs: [dev-deploy] # Runs only after dev-deploy job completes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Integration Test
+        env:
+          URI: {{ needs.dev-deploy.outputs.APP_INGRESS_URL}}
+        run: |
+          echo "Waiting for application to be ready..."
+          sleep 60  # Wait for a minute to allow the application to start
+
+          echo "Running integration tests..."
+          wget -q -O - http://${{ env.APP_INGRESS_URL }}/live | grep live
+
+          echo "Integration tests completed successfully."
