@@ -264,7 +264,7 @@ jobs:
       - name: Set App Ingress Host URL
         id: set-ingress-host-address
         run: |
-          echo "APP_INGRESS_URl=$(kubectl -n ${{ vars.NAMESPACE }} get ingress -o jsonpath='{.items[0].spec.tls[0].hosts[0]}')" >> "$GITHUB_ENV"
+          echo "APP_INGRESS_HOST=$(kubectl -n ${{ vars.NAMESPACE }} get ingress -o jsonpath='{.items[0].spec.tls[0].hosts[0]}')" >> "$GITHUB_ENV"
         # This command is used to fetch ip address dynamically.
 
 
@@ -278,16 +278,13 @@ jobs:
 
 
   integration-testing:
-    name: Integration Testing
+    name: Dev Integration Testing
     needs: [dev-deploy] # Runs only after dev-deploy job completes
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Integration Test
+      - name: Test URL Output using CURL and JQ
         env:
-          URI: {{ needs.dev-deploy.outputs.APP_INGRESS_URL}}
+          URL: {{ needs.dev-deploy.outputs.APP_INGRESS_URL}}
         run: |
           echo "Waiting for application to be ready..."
           sleep 60  # Wait for a minute to allow the application to start
