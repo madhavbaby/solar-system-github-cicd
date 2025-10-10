@@ -264,7 +264,14 @@ jobs:
       - name: Set App Ingress Host URL
         id: set-ingress-host-address
         run: |
-          echo "APP_INGRESS_HOST=$(kubectl -n ${{ vars.NAMESPACE }} get ingress -o jsonpath='{.items[0].spec.tls[0].hosts[0]}')" >> "$GITHUB_ENV"
+          APP_INGRESS_HOST=$(kubectl -n ${{ vars.NAMESPACE }} get ingress -o jsonpath='{.items[0].spec.tls[0].hosts[0]}')
+          echo "Ingress Host: $APP_INGRESS_HOST"
+          echo "APP_INGRESS_HOST=$APP_INGRESS_HOST" >> $GITHUB_OUTPUT
+
+      # - name: Set App Ingress Host URL
+      #   id: set-ingress-host-address
+      #   run: |
+      #     echo "APP_INGRESS_HOST=$(kubectl -n ${{ vars.NAMESPACE }} get ingress -o jsonpath='{.items[0].spec.tls[0].hosts[0]}')" >> "$GITHUB_ENV"
         # This command is used to fetch ip address dynamically.
 
 
@@ -284,7 +291,7 @@ jobs:
     steps:
       - name: Test URL Output using CURL and JQ
         env:
-          URL: ${{ needs.dev-deploy.outputs.APP_INGRESS_URL}}
+          URL: ${{ needs.dev-deploy.outputs.APP_INGRESS_URL }}
         run: |
           echo $URL
           echo ----------------------------------------
